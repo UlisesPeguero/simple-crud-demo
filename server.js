@@ -47,15 +47,17 @@ app.post('/students', (request, response) =>  {
     let student = new Student(request.body);  // body is teh data we sent from the request
     // insert document into the collection
     student.save()// attempts to save into the database
-        .then(() => { // successful saving
+        .then( newStudent => { // successful saving, newStudent gives us the new student created
             response.json({ // respond to the client with a success message
-                success: true // this can be anything
+                success: true, // this can be anything
+                student: newStudent // we send the new created student back
             });
         })
         .catch(error => { // couldn't be save
             console.log(error); // log in the console
             response.status(400).json({ // respond to the client with a failure message
                 success: false, // this can be anything
+                message: 'There was an error trying to create the Student.',
                 error: error.message
             });
         });

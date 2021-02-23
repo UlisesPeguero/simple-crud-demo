@@ -19,7 +19,11 @@
         <a class="btn btn-light mr-2" href="https://github.com/UlisesPeguero/local-crud/tree/master/simple" target="_blank" rel="noopener noreferrer" title="Back to main page.">Code</a>           
     </nav>    
     <div class="container">
-        <div id="formContainer" class="d-none row">
+        <!-- ignore warnings for commented out code -->
+        <!-- we add onsubmit="saveChanges()" to do POST or PUT depending of the action
+            the browser will be in charge of checking if we added the values that have an attribute "required"
+            and in the case of the type=email it will check if it has the proper email structure -->
+        <form id="formContainer" class="d-none row" onsubmit="saveChanges()">
             <!-- spacer, dissapears when smaller than 576px -->
             <div class="d-none d-sm-block col-sm-3"></div>            
             <div class="col-12 col-sm-6 bg-light p-3 mt-3 shadow">
@@ -39,12 +43,13 @@
                     <!-- Email input type="email" -->
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <Input class="form-control" id="email" type="email">
+                        <Input class="form-control" id="email" type="email" placeholder="email@domain.org" required>
                     </div>
                     <!-- Program selector -->
                     <div class="form-group">
                         <label for="program">Program</label>
-                        <select class="form-control" id="program">
+                        <select class="form-control" id="program" required>
+                            <option value disabled selected>Select one</option>
                             <option value="Advanced Manufacturing">Advanced Manufacturing</option>
                             <option value="Biotechnology">Biotechnology</option>
                             <option value="Software Development">Software Development</option>
@@ -52,12 +57,12 @@
                     </div>
                     <div class="text-right border-top py-2">
                         <!-- Cancel any changes -->
-                        <button class="btn btn-secondary" onclick="cancelChanges()" title="Closes form without saving">Cancel</button>                
+                        <button type="reset" class="btn btn-secondary" onclick="cancelChanges()" title="Closes form without saving">Cancel</button>                
                         <!-- Save changes and create -->
-                        <button class="btn btn-primary" onclick="saveChanges()" title="Save changes">Save</button>
+                        <button  class="btn btn-primary" title="Save changes">Save</button>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
         <div class="row">
             
@@ -94,7 +99,7 @@
         </div>
     </div>
     <!-- JS jQuery & Bootstraps -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     <!-- custom -->
     <script src="./js/app.js"></script>

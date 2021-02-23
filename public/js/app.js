@@ -5,7 +5,6 @@ const UPDATE = 1;
 const DELETE = 2;
 // constant to access data from localStorage
 const DATA = 'crudData';
-
 ///////| GLOBAL VARIABLES |/////////////////////////////////////////////////////
 
 // keep track of the action we are currently working on
@@ -43,11 +42,20 @@ function showForm(show) {
     }    
 }
 
+function checkValidation() {
+    return true;
+}
+
 // clears the form inputs
 function clearForm() {
-    let input = document.getElementById('simpleMessage');
+    // we get the first element of the Form into a variable to make the screen focus on it
+    let input = document.getElementById('firstName');
     input.value = '';
-    // set the focus of the input on the textare
+    // the rest we can equals to empty directly
+    document.getElementById('lastName').value = '';
+    document.getElementById('email').value = '';
+   // document.getElementById('program').selectedIndex = 0;    
+    // set the focus of the input on the firstName
     input.focus();
     // in case the page has been scrolled down too much this would return it into view
     input.scrollIntoView();
@@ -64,7 +72,7 @@ function createItem() {
     // clear values
     clearForm();    
     //
-    document.getElementById('simpleMessage').focus();
+    //document.getElementById('simpleMessage').focus();
 }
 
 // opens the form to edit an existing item
@@ -103,20 +111,20 @@ function removeItem(id) {
     }    
 }
 
-// save changes for the new item or updates the existing item
+// save changes for the new student or updates the existing student
 function saveChanges() {
-    // get message to be saved
-    let message = document.getElementById('simpleMessage').value;
+    // we create a json object with the data we need to save
+    let data = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        email: document.getElementById('email').value,
+        program: document.getElementById('program').value
+    }    
     // https://www.w3schools.com/js/js_switch.asp
     // check if the action as a new item or update item
     switch(action) {
         case CREATE:
-                    // increases lastId used by one
-                    messages.lastId++; 
-                    // add message to list of messages                    
-                    messages[messages.lastId] = message; // adds a key[lastId]:value[message] to messages                    
-                    // calls for a row creation with the new index and message
-                    createRow(messages.lastId, message);
+                    post(data); // we send the data of the student  we want to create
                     break;
         case UPDATE: 
                     // update message in the list of messages                    
@@ -125,12 +133,13 @@ function saveChanges() {
                     updateRow(selectedId, message);
                     break;
     }
-    // update storage data
-    updateStorage();
     // hide the form
     showForm(false);    
     // set action to creation by default
     action = CREATE;
+
+    // we return false for the Form to not redirect the page
+    return false;
 }
 
 
@@ -143,33 +152,31 @@ function cancelChanges() {
 ///////| DOM MANIPULATION |//////////////////////////////////////////////////////
 
 // creates a new row for the content grid
-function createRow(id, message) {    
+function createRow(student) {    
     // get element #content from simple.html
     let content = document.getElementById('content');
     // the += operator in strings works as an append function: "string" += "new" ...  "stringnew"
     // we add more HTML inside the grid, the browser will interprete it as we add it
     content.innerHTML += 
-        // creates a new row in the table <tr>
-        '<tr id="' + DATA + '-' + id +'" data="' + id + '">' +
-            // creates cell that contains the message and adds a unique identifier for it "message-{id}"
-            '<td id="message-' + id + '" class="p-2 border">' + message + '</td>' +
+        // creates a new row in the table <tr> with id = Student._id (unique)
+        '<tr id="' + student._id +'" data-id="' + student._id + '">' +
+            // First name "
+            '<td class="p-2 border">' + student.firstName + '</td>' +
+            // Last name "
+            '<td class="p-2 border">' + student.lastName + '</td>' +
+            // Email "
+            '<td class="p-2 border">' + student.email + '</td>' +
+            // Program "
+            '<td class="p-2 border">' + student.program + '</td>' +
             // creates cell for the options' buttons
             '<td class="text-center p-2 border">' + 
-                // create edit button that points to updateItem({id})
-                '<button class="btn btn-outline-info" onclick="updateItem(' + id + ')">' +
-                    // bootstrap icons https://icons.getbootstrap.com/icons/pen-fill/
-                    '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pen-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">' +
-                        '<path fill-rule="evenodd" d="M13.498.795l.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z"/>' +
-                    '</svg>' + 
+                // create edit button that points to updateItem(student._id)
+                '<button class="btn btn-info btn-block" onclick="updateItem(' + student._id + ')">' +
                     'Edit' + 
                 '</button>' + 
-                // create edit button that points to removeItem({id})
-                '<button class="btn btn-outline-danger" onclick="removeItem(' + id + ')">' + 
-                    // bootstrap icons https://icons.getbootstrap.com/icons/trash-fill/
-                    '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">' +
-                        '<path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>' +
-                    '</svg>' +
-                    'Remove' + 
+                // create edit button that points to removeItem(student._id)
+                '<button class="btn btn-danger btn-block" onclick="removeItem(' + student._id + ')">' + 
+                    'Delete' + 
                 '</button>' + 
             '</td>' +
         '</tr>';
@@ -178,73 +185,119 @@ function createRow(id, message) {
 // updates the message 
 function updateRow(id, message) {
     // get element that holds message
-    let messageElement = document.getElementById('message-' + id);
+    let messageElement = document.getElementById(id);
     // overwrites the text displayed with the updated version
     messageElement.innerText = message;    
 }
 
 // removes the <tr> that pertains to the message
 function removeRow(id) {
-    // get the row element, the rows have unique ids with the format "crudData-{id}". DATA = "crudData"
-    let row = document.getElementById(DATA + '-' + id);
+    // get the row element, the rows have unique ids 
+    let row = document.getElementById(id);
     // remove the element from the DOM
     row.remove();
 }
 
-///////| STORAGE |//////////////////////////////////////////////////////
-
-// we are using localStorage because we still haven't seen back-end, this example is not optimal and is only
-// for learning purposes
-
-// load messages from the localStorage
+// load messages from the API
 function loadMessages() {
-    // read the object crudData from the local storage
-    // https://www.w3schools.com/js/js_json_parse.asp
-    // JSON.parse( string ); returns a JSON object from a string    
-    // localStorage.getItem(DATA) returns a string
-    messages = JSON.parse(localStorage.getItem(DATA));
-    if(messages !== null) { // if messages exist from previous session it wont be null
-        // we empty the previous content if already exists        
-        let content = document.getElementById('content');
-        // set innerHTML to empty space to empty it
-        content.innerHTML = '';
-        // populate the HTML table
-        for(let id in messages) {
-            // we exclude the id we use to keep track of our last id, we create a row for every id besides it
-            if(id !== 'lastId') {
-                createRow(id, messages[id]);
-            }
-        }
-    } else { // if is null, create an object with lastId = 0;
-        messages = {
-            lastId: 0
-        };
-    }
+    // we empty the previous content if already exists to prepare
+    // 'content' is the data of the html table
+    let content = document.getElementById('content');
+    // set innerHTML to empty space to empty it
+    content.innerHTML = '';
+
+    // API GET
+    get();
+    // this function is at the bottom of the file
 }
 
-// update the storage data
-function updateStorage() {
-    // overwrite object crudData in the local storage with the content of messages
-    // https://www.w3schools.com/js/js_json_stringify.asp
-    // JSON.stringify( object ); returns a string representation of the object passed as parameter
-    // we need to send it as string due limitations of localStorage
-    localStorage.setItem(DATA, JSON.stringify(messages));
+/// API CALLS ///////////////////////////////
+// I have separated this functions from the rest to have all the functions that call the API in one place
+
+// API Url
+const apiUrl = './students';
+// code and api are in the same express server, this is equal to "localhost:8080/students" if on localhost
+
+
+// GET /students
+function get() {
+    // we use jquery to make an ajax call for GET, $.ajax = jQuery.ajax
+    // https://api.jquery.com/jQuery.ajax/
+    $.ajax({
+        method: 'get',
+        url: apiUrl
+    }).then(function (response) { // handle succesful response
+            // variable response contains the data sent back by the API            
+            // populate the HTML table
+            // forEach https://www.w3schools.com/jsref/jsref_foreach.asp
+            response.forEach(student => { // this for assigns one value of the array at the time to student
+                // we create a new row inside the table per value from the response
+                // one row per student
+                createRow(student);
+            });
+        })
+        .catch(function (error) { // handle error            
+            // send error to console
+            console.log(error);
+            // we show a error message that the API sent us back
+            // the json the API sent back will be in error.jsonResponse
+            // our API sents an atribute called 'message'
+            alert("Error while loading: " + error.jsonResponse);
+        });
+}
+ 
+// POST /students
+function post(studentData) {   // studentData is the data I will send to the API as req.body
+    // we use jquery to make an ajax call for GET, $.ajax = jQuery.ajax
+    // https://api.jquery.com/jQuery.ajax/
+    $.ajax({
+        method: 'post',
+        url: apiUrl,
+        data: studentData // this would be req.body on the API
+    }).then(function (response) { // handle succesful response
+            /*  variable response contains the data sent back by the API                        
+                according to the API on succes we get
+                {
+                    success: true,
+                    student: newStudent
+                }            
+                we create a new row inside the table per value from the new student */
+            createRow(response.student);            
+        })
+        .catch(function (error) { // handle error            
+            // send error to console
+            console.log(error);
+            // we show a error message that the API sent us back
+            // the json the API sent back will be in error.jsonResponse
+            // our API sents an atribute called 'message'
+            alert("Error while posting: " + error.jsonResponse);
+        });
 }
 
-// reset state of application 
-function resetApp() {
-    // executes the browser confirm window that gives the option of yes or no, the answer is boolean and pass onto variable response
-    let response = confirm('Do you want to reset the data?');
-    // we check for the response
-    if(response === true) { // if answer was yes or ok
-        // reset localStorage data
-        // set messages to empty and lastId = 0
-        messages = {
-            lastId: 0
-        };
-        // update storage
-        updateStorage();
-        // we call to load messages to redraw the grid and update the global variables
-        loadMessages();
-    } // we will omit the else if the response was false, we simply do nothing
+// PUT /students/:id
+function put(id, studentData) {   // id is the :id for the url, studentData is the data I will send to the API as req.body
+    // we use jquery to make an ajax call for GET, $.ajax = jQuery.ajax
+    // https://api.jquery.com/jQuery.ajax/
+    $.ajax({
+        method: 'post',
+        url: apiUrl + '/' + id, // /students/:id
+        data: studentData // this would be req.body on the API
+    }).then(function (response) { // handle succesful response
+            /*  variable response contains the data sent back by the API                        
+                according to the API on succes we get
+                {
+                    success: true,
+                    student: updatedStudent
+                }            
+                we update the existing row with the updated student */
+            createRow(response.student);            
+        })
+        .catch(function (error) { // handle error            
+            // send error to console
+            console.log(error);
+            // we show a error message that the API sent us back
+            // the json the API sent back will be in error.jsonResponse
+            // our API sents an atribute called 'message'
+            alert("Error while posting: " + error.jsonResponse);
+        });
 }

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requests examples</title>
+    <style>
+        body {
+            font-family: Arial;
+        }
+
+        .result {
+            display: block;
+            max-height: 250px;
+            overflow: auto;
+        }
+        li.L0, li.L1, li.L2, li.L3,
+        li.L5, li.L6, li.L7, li.L8 {
+            list-style-type: decimal !important;
+        }       
+    </style>
+</head>
+
+<body>
+    <h1> JQuery library </h1>
+    <pre class="prettyprint linenums">
+        <code>
+&lt;script src="https://code.jquery.com/jquery-3.5.1.min.js"&gt;&lt;/script&gt;</code>
+    </pre>
+        Using this code for the examples
+    <pre class="prettyprint linenums">
+        <code class="language-javascript">
+const url = 'https://capstone-team-3.herokuapp.com/api/tickets';
+
+function showResponse(identifier, data) {
+    document.getElementById('result' + identifier).innerHTML = JSON.stringify(data, null, 2);
+}
+
+function getData(indentifier) {
+    let data;
+    data =  JSON.parse(document.getElementById('data' + identifier).innerText);
+    return data;
+}
+
+function getId(identifier) {
+    let id;
+    id =  document.getElementById('input' + identifier).value;
+    return id;
+}
+        </code>
+    </pre>
+
+    <h2>GET</h2>
+    <p>
+        $.ajax(-url_endpoint-).then( . . . ).catch( . . . );
+    </p>
+    <button onclick="toggle('get')"> Show/Hide </button>
+    <div id="get" style="display: none;">
+    <pre class="prettyprint linenums">
+        <code spellcheck="false" class="language-javascript linenums">                        
+function get() {
+    $.ajax({
+        method: 'get',
+        url: url
+    }).then(function (response) {
+            // handle success
+            console.log(response);
+            // the information send back by the server is on response.data
+            showResponse('GET', response.data);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+            showResponse('POST', error.responseJSON);
+        });
+}
+        </code>
+    </pre>
+    <button onclick="get()">Run GET with all</button>
+    <br/>
+    Or
+    <br/>
+    <label>Id to update: </label><input id="inputGET" onchange="updateURL('GET')" style="width: 200px;"> <button onclick="getWithId()">run GET with an ID</button>
+    <p id="urlWithIdGET"></p>
+    <pre class="prettyprint">
+        <code id="resultGET" contenteditable spellcheck="false" class="language-javascript result"></code>
+    </pre>
+    </div>
+    <!-- POST -->
+    <h2>POST</h2>
+    <p>
+        $.ajax(-url_endpoint-, -data_to_save-).then( . . . ).catch( . . . );
+    </p>
+    <button onclick="toggle('post')"> Show/Hide </button>
+    <div id="post" style="display: none;">
+    This object can be edited to use it on the post execution
+    <pre class="prettyprint">
+        <code id="dataPOST" contenteditable spellcheck="false" class="language-javascript">                        
+{
+    "requestor": "Full Name",
+    "details": "Some problem",
+    "address": "Some address",
+    "email": "some@email.com"
+}        </code>
+    </pre>
+    <pre class="prettyprint linenums">
+        <code spellcheck="false" class="language-javascript">                        
+function post() {
+    let data = getData('POST');
+    $.ajax({
+        method: 'post',
+        url: url,
+        data: data,
+    }).then(function (response) {
+            // handle success
+            console.log(response);
+            // the information send back by the server is on response
+            showResponse('POST', response);
+        })
+        .catch(function (error) {
+            console.log(error);
+            showResponse('POST', error.responseJSON);
+        });
+}
+        </code>
+    </pre>
+    <button onclick="post()">Run POST</button>        
+    <pre class="prettyprint">
+        <code id="resultPOST" class="language-javascript"></code>
+    </pre>
+    </div>
+
+    <!-- PUT -->
+    <h2>PUT</h2>
+    <p>
+        $.ajax({
+            method: 'put',
+            url: -url_endpoint_with_id-,
+            data: -updated_data_to_save-
+        }).then( . . . ).catch( . . . );
+    </p>
+    <button onclick="toggle('put')"> Show/Hide </button>
+    <div id="put" style="display: none;">
+    <br/>
+    <label>Id to update: </label><input id="inputPUT" onchange="updateURL('PUT')" style="width: 200px;">
+    <p id="urlWithIdPUT"></p>
+    This object can be edited to use it on the put execution
+    <pre class="prettyprint">
+        <code id="dataPUT" contenteditable spellcheck="false" class="language-javascript">                        
+{
+    "requestor": "Updated Name",
+    "details": "Some problem",
+    "address": "Some address",
+    "email": "some@email.com"
+}        </code>
+    </pre>
+    <pre class="prettyprint linenums">
+        <code spellcheck="false" class="language-javascript">                        
+function put() {
+    let id = getId('PUT');
+    let data = getData('PUT');
+    $.ajax({
+        method: 'put',
+        url: url + '/' + id, 
+        data: data
+    }).then(function (response) {
+            // handle success
+            console.log(response);
+            showResponse('PUT', response);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+            showResponse('PUT', error.responseJSON);
+        });
+}
+        </code>
+    </pre>
+    <button onclick="put()">Run PUT</button>        
+    <pre class="prettyprint">
+        <code id="resultPUT" class="language-javascript"></code>
+    </pre>
+    </div>
+
+    <!-- DELETE -->
+    <h2>DELETE</h2>
+    <p>
+        $.ajax({
+            method: 'delete',
+            url: -url_endpoint_with_id-            
+        }).then( . . . ).catch( . . . );
+    </p>
+    <button onclick="toggle('delete')"> Show/Hide </button>
+    <div id="delete" style="display: none;">
+    <br/>
+    <label>Id to delete: </label><input id="inputDELETE" onchange="updateURL('DELETE')" style="width: 200px;">
+    <p id="urlWithIdDELETE"></p>
+    <pre class="prettyprint linenums">
+        <code spellcheck="false" class="language-javascript">                        
+function delete_() { // in the code cant use the word "delete" because is a command in javascript
+    let id = getId('DELETE');
+    $.ajax({
+        method: 'delete',
+        url: url + '/' + id                
+        }).then(function (response) {
+            // handle success
+            console.log(response);
+            showResponse('DELETE', response);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+            showResponse('DELETE', error.responseJSON);
+        });
+}
+        </code>
+    </pre>
+    <button onclick="delete_()">Run DELETE</button>        
+    <pre class="prettyprint">
+        <code id="resultDELETE" class="language-javascript"></code>
+    </pre>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <script>
+        const url = 'https://capstone-team-3.herokuapp.com/api/tickets';
+
+        function showResponse(identifier, data) {
+            document.getElementById('result' + identifier).innerHTML = JSON.stringify(data, null, 2);
+        }
+
+        function getData(identifier) {
+            let data;
+            data =  JSON.parse(document.getElementById('data' + identifier).innerText);
+            return data;            
+        }
+
+        function getId(identifier) {
+            let id;
+            id =  document.getElementById('input' + identifier).value;
+            return id;
+        }
+
+        function get() {
+            $.ajax({
+                method: 'get',
+                url: url
+            }).then(function (response) {
+                    // handle success
+                    console.log(response);
+                    showResponse('GET', response);
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                });
+        }
+
+        function getWithId() {
+            let id = getId('GET');
+            $.ajax({
+                method: 'get',
+                url: url + '/' + id, 
+            }).then(function (response) {
+                    // handle success
+                    console.log(response);
+                    showResponse('GET', response);
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                });
+        }
+        
+        function post() {
+            let data = getData('POST');
+            $.ajax({
+                method: 'post',
+                url: url, 
+                data: data
+            }).then(function (response) {
+                    // handle success
+                    console.log(response);
+                    showResponse('POST', response);
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                    showResponse('POST', error.responseJSON);
+                });
+        }
+
+        function put() {
+            let id = getId('PUT');
+            let data = getData('PUT');
+            $.ajax({
+                method: 'put',
+                url: url + '/' + id, 
+                data: data
+            }).then(function (response) {
+                    // handle success
+                    console.log(response);
+                    showResponse('PUT', response);
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                    showResponse('PUT', error.responseJSON);
+                });
+        }
+
+        function delete_() { // in the code cant use the word "delete" because is a command in javascript
+            let id = getId('DELETE');
+            $.ajax({
+                method: 'delete',
+                url: url + '/' + id                
+            }).then(function (response) {
+                    // handle success
+                    console.log(response);
+                    showResponse('DELETE', response);
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                    showResponse('DELETE', error.responseJSON);
+                });
+        }
+
+        // update url view
+        function updateURL(identifier) {
+            document.getElementById('urlWithId' + identifier).innerHTML = 'url = <b>' + url + '/' + getId(identifier) + '</b>';
+        }
+
+        // toggle divs
+        function toggle(identifier) {
+            let div = document.getElementById(identifier);
+            if(div.style.display.toLowerCase() === 'none') {
+                div.style.display = 'block';                
+            } else {
+                div.style.display = 'none';                
+            }
+        }
+    </script>
+</body>
+
+</html>
