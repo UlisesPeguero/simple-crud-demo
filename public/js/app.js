@@ -120,6 +120,8 @@ function saveChanges() {
         email: document.getElementById('email').value,
         program: document.getElementById('program').value
     }    
+    console.log(data);
+    return;
     // https://www.w3schools.com/js/js_switch.asp
     // check if the action as a new item or update item
     switch(action) {
@@ -137,9 +139,6 @@ function saveChanges() {
     showForm(false);    
     // set action to creation by default
     action = CREATE;
-
-    // we return false for the Form to not redirect the page
-    return false;
 }
 
 
@@ -157,7 +156,7 @@ function createRow(student) {
     let content = document.getElementById('content');
     // the += operator in strings works as an append function: "string" += "new" ...  "stringnew"
     // we add more HTML inside the grid, the browser will interprete it as we add it
-    content.innerHTML += 
+    let row = 
         // creates a new row in the table <tr> with id = Student._id (unique)
         '<tr id="' + student._id +'" data-id="' + student._id + '">' +
             // First name "
@@ -171,15 +170,34 @@ function createRow(student) {
             // creates cell for the options' buttons
             '<td class="text-center p-2 border">' + 
                 // create edit button that points to updateItem(student._id)
-                '<button class="btn btn-info btn-block" onclick="updateItem(' + student._id + ')">' +
+                '<button class="btn btn-info btn-block" onclick="updateItem("' + student._id + '")">' +
                     'Edit' + 
                 '</button>' + 
                 // create edit button that points to removeItem(student._id)
-                '<button class="btn btn-danger btn-block" onclick="removeItem(' + student._id + ')">' + 
+                '<button class="btn btn-danger btn-block" onclick="removeItem("' + student._id + '")">' + 
                     'Delete' + 
                 '</button>' + 
             '</td>' +
         '</tr>';
+    /*
+        <table>
+            <thead>
+                <tr>
+                    <th> First name </th>
+                    ...
+                    <th> Action </th>                    
+                </tr>
+            </thead>
+            <tbody id="content">
+                <tr> -> create this part
+                    <td> first name here </td>
+                    ...                        
+                    <td> actions here </td>
+                </tr>
+            </tbody>
+        </table>
+    */
+    content.innerHTML += row;
 }
 
 // updates the message 
@@ -229,7 +247,7 @@ function get() {
     }).then(function (response) { // handle succesful response
             // variable response contains the data sent back by the API            
             // populate the HTML table
-            // forEach https://www.w3schools.com/jsref/jsref_foreach.asp
+            // forEach https://www.w3schools.com/jsref/jsref_foreach.asp       
             response.forEach(student => { // this for assigns one value of the array at the time to student
                 // we create a new row inside the table per value from the response
                 // one row per student

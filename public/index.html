@@ -23,7 +23,7 @@
         <!-- we add onsubmit="saveChanges()" to do POST or PUT depending of the action
             the browser will be in charge of checking if we added the values that have an attribute "required"
             and in the case of the type=email it will check if it has the proper email structure -->
-        <form id="formContainer" class="d-none row" onsubmit="saveChanges()">
+        <form id="formContainer" class="d-none row" onsubmit="saveChanges(); return false;">
             <!-- spacer, dissapears when smaller than 576px -->
             <div class="d-none d-sm-block col-sm-3"></div>            
             <div class="col-12 col-sm-6 bg-light p-3 mt-3 shadow">
@@ -59,7 +59,7 @@
                         <!-- Cancel any changes -->
                         <button type="reset" class="btn btn-secondary" onclick="cancelChanges()" title="Closes form without saving">Cancel</button>                
                         <!-- Save changes and create -->
-                        <button  class="btn btn-primary" title="Save changes">Save</button>
+                        <button  class="btn btn-primary"  title="Save changes">Save</button>
                     </div>
                 </div>
             </form>
@@ -92,7 +92,8 @@
                         </th>
                         <th id="gridOptionsHeader" class="border p-2">Options</th>
                     </thead>
-                    <tbody id="content">                        
+                    <tbody id="content">    
+                                           
                     </tbody>
                 </table>
             </div>

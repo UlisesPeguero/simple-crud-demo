@@ -1,6 +1,7 @@
 require('dotenv').config(); // loads all the key pairs from .env into process.env
 const express = require('express'); // get express from modules
 const app = express(); // create application from express
+const cors = require('cors');
 const mongoose = require('mongoose'); // get mongoose from modules
 const PORT = process.env.PORT || 8080; // port for express to listen on
 // || makes so that in case that the file .env is not created it defaults to 8080
@@ -10,6 +11,7 @@ require('./database');
 const Student = require('./models/student');
 
 // template express server
+app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json()); // specify that we are using json objects to request and response
 
