@@ -1,5 +1,7 @@
 #simple-crud-demo
 
+Application running demo
+https://crud-demo-skc.herokuapp.com/
 
 This is a very simple DEMO of a CRUD application.
 Feel free to use it however you want.
