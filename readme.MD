@@ -3,23 +3,22 @@
 
 This is a very simple DEMO of a CRUD application.
 Feel free to use it however you want.
-
-There is plenty room for optimization, the application is for learning purposes only. It only contains styles from default Bootstraps.
+There is plenty room for optimization, it was made as a learning tool. It only contains styles from default Bootstraps.
 
 Made using 
 
--Front-end
+**Front-end
 
   -Bootstraps[https://getbootstrap.com/]      
   -jQuery[https://jquery.com/] 
 
--Back-end
+**Back-end
  
   -Nodejs[https://nodejs.org/en/]      
   -Express[https://expressjs.com/]      
   -Mongoose[https://www.npmjs.com/package/mongoose]       
 
--Database 
+**Database 
 
   -MongoDB [https://www.mongodb.com/]
  
