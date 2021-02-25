@@ -16,7 +16,11 @@ let Student = new mongoose.Schema({
         type: String,
         required: true
     },
-    email: String        
+    email: String, // email is an optional field
+    program: {
+        type: String,
+        required: true
+    }
 });
 
 // allows to require this file

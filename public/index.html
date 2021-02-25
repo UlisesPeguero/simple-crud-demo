@@ -16,39 +16,41 @@
     <nav class="navbar navbar-dark bg-dark shadow">
         <span class="navbar-brand mb-0 h1 mr-auto">Simple CRUD</span>
         <!-- Go to github code -->
-        <a class="btn btn-light mr-2" href="https://github.com/UlisesPeguero/local-crud/tree/master/simple" target="_blank" rel="noopener noreferrer" title="Back to main page.">Code</a>           
+        <a class="btn btn-light mr-2" href="https://github.com/UlisesPeguero/simple-crud-demo/" target="_blank" rel="noopener noreferrer" title="Back to main page.">Code</a>           
     </nav>    
     <div class="container">
         <!-- ignore warnings for commented out code -->
         <!-- we add onsubmit="saveChanges()" to do POST or PUT depending of the action
             the browser will be in charge of checking if we added the values that have an attribute "required"
             and in the case of the type=email it will check if it has the proper email structure -->
-        <form id="formContainer" class="d-none row" onsubmit="saveChanges(); return false;">
+        <form id="formContainer" class="d-none row">
             <!-- spacer, dissapears when smaller than 576px -->
             <div class="d-none d-sm-block col-sm-3"></div>            
             <div class="col-12 col-sm-6 bg-light p-3 mt-3 shadow">
-                <h4 id="formTitle" class="w-100 bg-light mt-n2 border-bottom">New Student</h4>                
+                <h4 id="formTitle" class="w-100 bg-light mt-n2 border-bottom"></h4>                
                 <!-- https://getbootstrap.com/docs/4.5/components/forms/ -->            
                 <div>
                     <!-- First name input -->
                     <div class="form-group">
                         <label for="firstName">First name</label>
-                        <Input class="form-control" id="firstName" required>
+                        <!-- [required] makes it so the input cannot be empty and will stop the saving process -->
+                        <Input class="form-control" id="firstName" name="firstName" required>
                     </div>
                     <!-- Last name input -->
                     <div class="form-group">
                         <label for="lastName">Last name</label>
-                        <Input class="form-control" id="lastName" required>
+                        <Input class="form-control" id="lastName" name="lastName" required>
                     </div>
-                    <!-- Email input type="email" -->
+                    <!-- Email input type "email" -->
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <Input class="form-control" id="email" type="email" placeholder="email@domain.org" required>
+                        <!-- email is optional, however, if something is typed in email it has to have an actual email format to be valid -->
+                        <Input class="form-control" id="email" type="email" name="email" placeholder="email@domain.org">
                     </div>
                     <!-- Program selector -->
                     <div class="form-group">
                         <label for="program">Program</label>
-                        <select class="form-control" id="program" required>
+                        <select class="form-control" id="program" name="program" required>
                             <option value disabled selected>Select one</option>
                             <option value="Advanced Manufacturing">Advanced Manufacturing</option>
                             <option value="Biotechnology">Biotechnology</option>
@@ -59,7 +61,7 @@
                         <!-- Cancel any changes -->
                         <button type="reset" class="btn btn-secondary" onclick="cancelChanges()" title="Closes form without saving">Cancel</button>                
                         <!-- Save changes and create -->
-                        <button  class="btn btn-primary"  title="Save changes">Save</button>
+                        <button type="button" class="btn btn-primary"  title="Save changes" onclick="saveChanges()">Save</button>
                     </div>
                 </div>
             </form>
@@ -71,6 +73,9 @@
             <div class="col-12 col-sm-10">
                 <h3 class="text-center pt-2">
                     <!-- Button that activates the creation of an item -->
+                    <button class="btn btn-secondary align-middle" onclick="loadMessages()">
+                        Refresh
+                    </button>
                     <button class="btn btn-primary align-middle" onclick="createItem()">
                         New
                     </button>

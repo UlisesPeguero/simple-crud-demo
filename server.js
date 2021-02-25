@@ -11,7 +11,7 @@ require('./database');
 const Student = require('./models/student');
 
 // template express server
-app.use(cors());
+//app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json()); // specify that we are using json objects to request and response
 
@@ -91,39 +91,35 @@ app.get('/students/:id', (request, response) => {
 // model.save
 app.put('/students/:id', (request, response) => {
     const id = request.params.id; // get id form request params
+    const data = request.body; // body is the data we sent from the request
     // get the document to update
-    Student.findById( // Student find by id
-        id,
-        (error, result) => { // result: Student
-            if(error) { // was there an error?
+    Student.findByIdAndUpdate(
+        id, // the id to search for
+        data, // the new data for the document
+        { new: true }) // {new: true} tells mongoose to return the new modified student
+        .then((updatedStudent) => {
+            if (!updatedStudent) { // if the updatedStudent doesn't have data, the ticket couldn't be found
                 response.status(400); // status = 400
-                response.json({ // send error to client
+                response.json({ // respond to client with an error message
                     message: 'Data was not found.',
-                    error: error.message
+                    success: false,
                 });
-            } else { // there was not an error
-                const data = request.body;// data = request.body
-                // result = data
-                result.firstName = data.firstName;
-                result.lastName = data.lastName;
-                result.email = data.email;
-                //
-                result.save() // result.save
-                    .then(() => { 
-                        response.json({
-                            success: true
-                        });
-                    })
-                    .catch(error => {
-                        response.status(400);
-                        response.json({
-                            success: false,
-                            error: error.message
-                        });
-                    });
+            } else { // if updatedStudent has data, means that it was found and updated
+                response.json({ // respond to client with a success message and the updatedStudent
+                    success: true,
+                    student: updatedStudent
+                });
             }
-        }
-    );
+        })
+        .catch(error => { // there was an error while trying to search and update it
+            console.log(error); // log in the console
+            response.status(500); // status = 500
+            response.json({ // respond to the client with a failure message
+                success: false,
+                message: "Could not update user ",
+                error: error.message || 'An error has ocurred'
+            });
+        });
 });
 
 // DELETE /students/:id
@@ -131,27 +127,28 @@ app.put('/students/:id', (request, response) => {
 // model.deleteOne(search, callback(error, result))
 app.delete('/students/:id', (request, response) => {
     const id = request.params.id; // id = request.params.id
-    Student.deleteOne({
-        _id: ObjectId(id)
-    }, (error, result) => {
-        if(error) { // if there was error
-            response.status(400);            
-            response.json({
+    Student.findByIdAndRemove(id)
+    .then((deletedStudent) => {
+        if (!deletedStudent) { // if the deletedStudent doesn't have data, it couldn't be found
+            response.status(400); // status = 400
+            response.json({ // respond to client with an error message
+                message: 'Data was not found.',
                 success: false,
-                error: error.message
             });
-        } else { // if everything worked out and found the student
-            if(result.deletedCount > 0) { // if there was something deleted
-                response.json({
-                    success: true
-                });
-            } else { // if 0 meaning nothing was found
-                response.status(400);
-                response.json({
-                    message: 'Data was not found'
-                });
-            }
-        } 
+        } else {// if updatedTicket has data, means that it was found and updated
+            response.json({ // respond to client with a success message 
+                success: true
+            });
+        }
+    })
+    .catch(error => { // there was an error while trying to search and delete it
+        console.log(error); // log in the console
+        response.status(500); // status = 500
+        response.json({ // respond to the client with a failure message
+            success: false,
+            message: "Could not delete user ",
+            error: error.message || 'An error has ocurred'
+        });
     });
 });
 
