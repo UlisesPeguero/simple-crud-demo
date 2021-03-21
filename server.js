@@ -11,7 +11,7 @@ require('./database');
 const Student = require('./models/student');
 
 // template express server
-//app.use(cors());
+app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json()); // specify that we are using json objects to request and response
 
@@ -36,7 +36,7 @@ app.get('/students', (request, response) => {
                 error: error.message
             });
         } else { // if there was no error return result
-            response.json(result);
+            response.status(200).json(result);
         }
     });
 });
@@ -50,7 +50,7 @@ app.post('/students', (request, response) =>  {
     // insert document into the collection
     student.save()// attempts to save into the database
         .then( newStudent => { // successful saving, newStudent gives us the new student created
-            response.json({ // respond to the client with a success message
+            response.status(200).json({ // respond to the client with a success message
                 success: true, // this can be anything
                 student: newStudent // we send the new created student back
             });
@@ -80,7 +80,7 @@ app.get('/students/:id', (request, response) => {
                     error: error.message
                 });
             } else {
-                response.json(result); // Display document found
+                response.status(200).json(result); // Display document found
             }
         }
     )
@@ -105,7 +105,7 @@ app.put('/students/:id', (request, response) => {
                     success: false,
                 });
             } else { // if updatedStudent has data, means that it was found and updated
-                response.json({ // respond to client with a success message and the updatedStudent
+                response.status(200).json({ // respond to client with a success message and the updatedStudent
                     success: true,
                     student: updatedStudent
                 });
@@ -136,7 +136,7 @@ app.delete('/students/:id', (request, response) => {
                 success: false,
             });
         } else {// if updatedTicket has data, means that it was found and updated
-            response.json({ // respond to client with a success message 
+            response.status(200).json({ // respond to client with a success message 
                 success: true
             });
         }
